@@ -1,6 +1,10 @@
 # Development note
 Everything interesting when we develop this code.
 
+## Hardware config
+![Hardware](https://github.com/Xinyuan-LilyGO/T-Display-S3/raw/main/image/T-DISPLAY-S3.jpg)
+
+
 ## Display driver
 Lilygo only provided driver for Arduino platform.
 But there are other drivers aviliable for ESP-IDF.
