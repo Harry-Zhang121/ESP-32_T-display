@@ -14,6 +14,9 @@ But there are other drivers aviliable for ESP-IDF.
 
 [LVGL](https://docs.lvgl.io/7.11/) is a graphic library that looks very useful.
 
+## Example project
+[Offical esp-idf example using LVGL](https://github.com/espressif/esp-idf/tree/v4.4.3/examples/peripherals/lcd/lvgl)
+
 ## Issues that I encountered
 
 ### Boot loop
