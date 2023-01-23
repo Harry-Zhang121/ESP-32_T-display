@@ -26,6 +26,11 @@ board_build.flash_mode = dio
 ```
 [For more, Check this](https://github.com/platformio/platform-espressif32/issues/622)
 
+### Display driver
+**The display driver is connected to MCU via Intel 8080 parallel interface. NOT spi!**
+**PCLK** = **WR**. Same thing different name.
+> The display will write data lines when there’s a falling edge on WR signal (a.k.a the PCLK)
+
 ### Porting IDF project to PlatformIO
 [Check this github issue](https://github.com/lvgl/lv_port_esp32/issues/220)
 
