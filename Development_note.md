@@ -25,3 +25,7 @@ board_build.flash_mode = dio
 
 ### Porting IDF project to PlatformIO
 [Check this github issue](https://github.com/lvgl/lv_port_esp32/issues/220)
+
+
+### HSPI undecleared
+[solution](https://www.esp32.com/viewtopic.php?t=24492)
