@@ -99,6 +99,28 @@ void lv_example_style_8(void)
     lv_obj_center(obj);
 }
 
+//global variable used by the periodic function
+unsigned int counter = 0;
+unsigned int row_count = 0;
+void periodic()
+{
+  
+  Serial.print(counter);
+  Serial.print("\t\t");
+  row_count++;
+  
+  if(row_count >4)
+  {
+    row_count = 0;
+    Serial.print("\n");
+  }
+  counter++;
+}
+
+void task_handler(lv_timer_t *task)
+{
+    periodic();
+}
 
 void setup() {
   pinMode(PIN_POWER_ON, OUTPUT);
@@ -192,6 +214,8 @@ void setup() {
 
  
   is_initialized_lvgl = true;
+
+  lv_timer_create(task_handler, 1000, NULL);
 
   lv_example_style_8();
 }
