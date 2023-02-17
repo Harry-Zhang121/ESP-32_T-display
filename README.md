@@ -9,8 +9,8 @@ A personal project build around Lilygo T-display-S3.
 
 ```
     |
-    |_lvgl
-    |_some_other_lib
+    |_lvgl/
+    |_some_other_lib/
     |_lv_conf.h
 ```
 
