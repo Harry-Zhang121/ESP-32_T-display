@@ -12,8 +12,6 @@
 This example can only be run on platformIO.
 Because Arduino cannot index into the demos directory.
 */
-#include "demos/lv_demos.h"
-#include "lv_conf.h"
 #include "lvgl.h" /* https://github.com/lvgl/lvgl.git */
 
 #include "Arduino.h"
@@ -95,8 +93,8 @@ void lv_example_style_8(void)
     /*Create an object with the new style*/
     lv_obj_t * obj = lv_label_create(lv_scr_act());
     lv_obj_add_style(obj, &style, 0);
-    lv_label_set_text(obj, "Text of\n"
-                      "a label");
+    lv_label_set_text(obj, "It is\n"
+                      "working!");
 
     lv_obj_center(obj);
 }
