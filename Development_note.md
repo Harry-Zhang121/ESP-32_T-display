@@ -1,6 +1,9 @@
 # Development note
 Everything interesting when we develop this code.
 
+## Code repo
+The first working example is commit `c073f1a`. You should see "It is working!" printed on the display.
+
 ## Hardware config
 ![Hardware](https://github.com/Xinyuan-LilyGO/T-Display-S3/raw/main/image/T-DISPLAY-S3.jpg)
 
