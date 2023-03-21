@@ -1,13 +1,16 @@
-#ifndef USEPLATFORMIO
-#error "This example can only be run on platformIO"
-#endif
-
-
 
 /* The product now has two screens, and the initialization code needs a small change in the new version. The LCD_MODULE_CMD_1 is used to define the
  * switch macro. */
 #define LCD_MODULE_CMD_1
 
+
+//Setup wifi detial
+char ssid[] = "Find_X3";
+char password[] = "1211180000";
+
+// enter your hmacKey (10 digits)
+// In Base32: I65VU7K5ZQL7WB4E
+uint8_t hmacKey[] = {0x47, 0xbb, 0x5a, 0x7d, 0x5d, 0xcc, 0x17, 0xfb, 0x07, 0x84};
 /*
 This example can only be run on platformIO.
 Because Arduino cannot index into the demos directory.
@@ -20,6 +23,9 @@ Because Arduino cannot index into the demos directory.
 #include "esp_lcd_panel_ops.h"
 #include "esp_lcd_panel_vendor.h"
 #include "pin_config.h"
+#include <WiFi.h>
+#include <NTPClient.h>
+#include <TOTP.h>
 
 esp_lcd_panel_io_handle_t io_handle = NULL;
 static lv_disp_draw_buf_t disp_buf; // contains internal graphic buffer(s) called draw buffer(s)
@@ -51,6 +57,12 @@ lcd_cmd_t lcd_st7789v[] = {
 
 };
 #endif
+
+
+//Global variables:
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP);
+TOTP totp = TOTP(hmacKey, 10);
 
 
 
@@ -88,45 +100,61 @@ void lv_example_style_8(void)
     lv_style_set_text_color(&style, lv_palette_main(LV_PALETTE_BLUE));
     lv_style_set_text_letter_space(&style, 5);
     lv_style_set_text_line_space(&style, 20);
-    lv_style_set_text_decor(&style, LV_TEXT_DECOR_UNDERLINE);
+    lv_style_set_text_font(&style, &lv_font_montserrat_48); //If you want different font size. Enable it first in lv_conf.h
 
-    /*Create an object with the new style*/
+    //Create an object with the new style
     lv_obj_t * obj = lv_label_create(lv_scr_act());
     lv_obj_add_style(obj, &style, 0);
-    lv_label_set_text(obj, "It is\n"
-                      "working!");
-
     lv_obj_center(obj);
+
+    //Create a timer which call TOTP_gen function every 30 second.
+    lv_timer_t* TOTP_timer = lv_timer_create(TOTP_gen, 30000, obj);
+    //Wait until the time reach 0 or 30 second then mark the timer as ready to run.
+    unsigned int current_second = timeClient.getSeconds();
+    unsigned int second_offset = 0;
+    if(current_second < 30)
+      second_offset = 31 - current_second;
+    else
+      second_offset = 61 - current_second;
+
+    Serial.print("Delay for");
+    Serial.print(second_offset);
+
+    delay(second_offset*1000);
+    lv_timer_ready(TOTP_timer);
+
+
+    
+    
 }
 
-//global variable used by the periodic function
-unsigned int counter = 0;
-unsigned int row_count = 0;
-void periodic()
-{
-  
-  Serial.print(counter);
-  Serial.print("\t\t");
-  row_count++;
-  
-  if(row_count >4)
-  {
-    row_count = 0;
-    Serial.print("\n");
-  }
-  counter++;
-}
 
-void task_handler(lv_timer_t *task)
+void TOTP_gen(lv_timer_t *task)
 {
-    periodic();
+  // update the time 
+  timeClient.update();
+
+  // generate the TOTP code and convert to C-Style string use c_str() method.
+  String new_code = String(totp.getCode(timeClient.getEpochTime()));
+  const char* new_code_c_style = new_code.c_str();
+
+  lv_obj_t* obj = (lv_obj_t*)task->user_data;
+
+  Serial.print(timeClient.getFormattedTime());
+  Serial.print("\t");
+  Serial.print(new_code);
+  Serial.println();
+  lv_label_set_text(obj, new_code_c_style);
 }
 
 void setup() {
+  //Power up LCD
   pinMode(PIN_POWER_ON, OUTPUT);
   digitalWrite(PIN_POWER_ON, HIGH);
+  //Start serial console
   Serial.begin(115200);
 
+  //Setup diaplay driver and LVGL
   pinMode(PIN_LCD_RD, OUTPUT);
   digitalWrite(PIN_LCD_RD, HIGH);
   esp_lcd_i80_bus_handle_t i80_bus = NULL;
@@ -215,7 +243,22 @@ void setup() {
  
   is_initialized_lvgl = true;
 
-  lv_timer_create(task_handler, 1000, NULL);
+  
+  // connect to the WiFi network
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(1000);
+    Serial.println("Establishing connection to WiFi...");
+  }
+  Serial.print("Connected to WiFi with IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+
+  // start the NTP client
+  timeClient.begin();
+  Serial.println("NTP client started");
+  Serial.println();
+
 
   lv_example_style_8();
 }
