@@ -1,5 +1,5 @@
 # ESP-32_T-display
-A personal project build around Lilygo T-display-S3.
+A personal project build around Lilygo T-display-S3 which turn your esp32-s3 into an 2FA authenticator.
 
 ## How to build
 1. Install PlatformIO on your code editer.
@@ -13,5 +13,9 @@ A personal project build around Lilygo T-display-S3.
     |_some_other_lib/
     |_lv_conf.h
 ```
-
+5. Modify `ssid` and `password` according to your wifi information.
+6. Modify `hmacKey` to be your 2FA private key. You might need to convert it into Base32.
 5. In PlatformIO sidebar click *build*. 
+
+## Development documentation
+Please refer to `Development_note.md` under the root directory.
