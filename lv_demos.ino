@@ -5,16 +5,13 @@
 
 
 //Setup wifi detial
-char ssid[] = "Find_X3";
-char password[] = "1211180000";
+char ssid[] = "Wifi Name";
+char password[] = "wifi password";
 
 // enter your hmacKey (10 digits)
 // In Base32: I65VU7K5ZQL7WB4E
 uint8_t hmacKey[] = {0x47, 0xbb, 0x5a, 0x7d, 0x5d, 0xcc, 0x17, 0xfb, 0x07, 0x84};
-/*
-This example can only be run on platformIO.
-Because Arduino cannot index into the demos directory.
-*/
+
 #include "lvgl.h" /* https://github.com/lvgl/lvgl.git */
 
 #include "Arduino.h"
